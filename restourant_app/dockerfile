@@ -1,13 +1,14 @@
-FROM php:8.4-rc-apache
+# PHP için Dockerfile
+FROM php:8.0-apache
 
+# Apache modüllerini etkinleştirme
+RUN docker-php-ext-install mysqli pdo pdo_mysql
 
-RUN apt-get update && apt-get install -y git
-RUN docker-php-ext-install pdo pdo_mysql mysqli
-RUN a2enmod rewrite
+# Uygulama dosyalarını konteynıra kopyala
+COPY . /var/www/html
 
-COPY src /var/www/html/
-EXPOSE 80/tcp
-EXPOSE 443/tcp
+# Port aç
+EXPOSE 80
 
 
 

@@ -1,31 +1,36 @@
 version: '3.8'
 
-volumes:
-  datafiles:
-
 services:
-  mysql:
-    image: mysql
-    container_name: mysql8
-    environment:
-      - MYSQL_ROOT_PASSWORD=secret
-      - MYSQL_TCP_PORT=3306
-    volumes:
-      - datafiles:/var/lib/mysql
-    restart: always
-
-  website:
-    container_name: php73
+  php:
     build:
       context: .
       dockerfile: Dockerfile
-    environment:
-      - MYSQL_DBHOST=mysql
-      - MYSQL_DBPORT=3306
-      - MYSQL_DBUSER=root
-      - MYSQL_DBPASS=secret
+    container_name: php_app
     ports:
-      - 8080:80
-      - 8083:443
-    depends_on:
-      - mysql
+      - "8080:80"
+    volumes:
+      - ./src:/var/www/html
+    networks:
+      - mynetwork
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_db
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: restaurant_app
+      MYSQL_USER: root
+      MYSQL_PASSWORD: secret
+     volumes:
+      - db_data:/var/lib/mysql
+      - ./db:/docker-entrypoint-initdb.d
+    networks:
+      - mynetwork
+
+volumes:
+  db_data:
+    driver: local
+
+networks:
+  mynetwork:
+    driver: bridge
