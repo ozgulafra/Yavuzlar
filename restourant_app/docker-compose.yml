@@ -12,6 +12,7 @@ services:
       - ./src:/var/www/html
     networks:
       - mynetwork
+      
 
   mysql:
     image: mysql:8.0
