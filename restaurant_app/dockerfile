@@ -1,0 +1,14 @@
+# PHP için Dockerfile
+FROM php:8.0-apache
+
+# Apache modüllerini etkinleştirme
+RUN docker-php-ext-install mysqli pdo pdo_mysql
+
+# Uygulama dosyalarını konteynıra kopyala
+COPY . /var/www/html
+
+# Port aç
+EXPOSE 80
+
+
+
