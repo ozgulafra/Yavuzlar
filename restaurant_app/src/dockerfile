@@ -1,0 +1,10 @@
+FROM php:7.4-apache
+
+# Gerekli uzantıları yükleyin
+RUN docker-php-ext-install mysqli pdo pdo_mysql
+
+# Uygulama dosyalarını kopyalayın
+COPY . /var/www/html/
+
+# Apache ayarlarını yapılandırın
+RUN chown -R www-data:www-data /var/www/html
