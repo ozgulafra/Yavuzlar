@@ -227,10 +227,3 @@ nextQuizButton.addEventListener('click', () => {
     nextQuestion()
 })
 
-/*Referanslar 
-https://www.youtube.com/watch?v=w1Oz0Sj1QyQ
-https://dizzpy.medium.com/how-to-connect-html-with-json-using-javascript-a-beginners-guide-25e94306fa0f
-https://www.geeksforgeeks.org/how-to-delete-an-index-from-json-object/
-https://www.youtube.com/watch?v=P7h80B-1ifA
-https://www.youtube.com/watch?v=NxVCq4p0Kb0
-*/
