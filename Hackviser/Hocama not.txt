@@ -1,0 +1,2 @@
+Isınmalar zorunlu olduğu için labların hepsini çözmedim. Çözdüklerim de OWASP ödevinde olduğu için buraya eklemedim. Isınmaları bir süre önce çözüp write-up kısmını sonraya bırakmıştım. Çözerken de ekran görüntüsü almadım. Bunun için halihazırda yazılmış olan write-uplardaki ekran görüntülerini kullandım. Çözdüğüme kanıt olabilmesi adına profilimi de buraya bırakıyorum. Aktiviteler kısmından görebilirsiniz. 
+https://app.hackviser.com/profile/nickozurlusu
